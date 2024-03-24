@@ -1,4 +1,5 @@
 #include "console.h"
+#include <string.h>
 
 using namespace std;
 using namespace console;
@@ -20,6 +21,7 @@ int y = BOARD_SIZE/2;
 int snake_x=-1;
 int snake_y=0;
 int frame=0;
+string score="0";
 
 void handleInput() {
   if (key(K_LEFT)) {
@@ -56,6 +58,30 @@ void drawSnake() {
   // x, y 위치에 *을 그린다.
   draw(x, y, "■");
 }
+void restart(){
+  x = BOARD_SIZE / 2;
+  y = BOARD_SIZE / 2;
+  snake_x = -1;
+  frame = 0;
+  score = "0";
+
+  clear();
+  draw(0, 0, "┏");
+  draw(BOARD_SIZE, 0, "┓");
+  draw(0, BOARD_SIZE, "┗");
+  draw(BOARD_SIZE, BOARD_SIZE, "┛");
+  for (int i = 1; i < BOARD_SIZE; i++) {
+      draw(i, 0, "━");
+       draw(0, i, "┃");
+  }
+  for (int i = BOARD_SIZE - 1; i > 0; i--) {
+      draw(i, BOARD_SIZE, "━");
+      draw(BOARD_SIZE, i, "┃");
+  }
+
+  draw(6, 21, "Score: ");
+  draw(13, 21, score);
+}
 
 void game() {
 
@@ -75,8 +101,11 @@ void game() {
         draw(BOARD_SIZE,i,"┃");
 
     }
+    draw(6,21,"Score: ");
+    draw(13,21,score);
 
   while (true) {
+    
     frame++;
 
     draw(x,y," ");
@@ -88,8 +117,20 @@ void game() {
     x+=snake_x;
     y+=snake_y;
    }
-   if(x==BOARD_SIZE||y==BOARD_SIZE){
-    break;
+   if(x==BOARD_SIZE||y==BOARD_SIZE||x==0||y==0||key(K_ESC)){
+
+    draw(6,10,"YOU LOSE!");
+    draw(1,11,"Try again? (Enter)");
+
+    while (!key(K_ENTER) && !key(K_ESC)) {
+            wait();
+        }
+        if (key(K_ENTER)) {
+             restart();
+        } 
+        else if (key(K_ESC)) {
+            break; 
+        }
    }
    drawSnake();
     wait();
@@ -98,7 +139,11 @@ void game() {
 
 
 int main(){
+  
     game();
+    
    
+
+
     return 0;
 }
