@@ -17,19 +17,26 @@ using namespace console;
 
 int x = BOARD_SIZE/2;
 int y = BOARD_SIZE/2;
+int snake_x=-1;
+int snake_y=0;
+int frame=0;
 
 void handleInput() {
   if (key(K_LEFT)) {
-    x--;
+    snake_x=-1;
+    snake_y=0;
   }
   if (key(K_RIGHT)) {
-    x++;
+    snake_x=1;
+    snake_y=0;
   }
   if (key(K_UP)) {
-    y--;
+    snake_x=0;
+    snake_y=-1;
   }
   if (key(K_DOWN)) {
-    y++;
+    snake_x=0;
+    snake_y=1;
   }
 }
 
@@ -70,16 +77,21 @@ void game() {
     }
 
   while (true) {
+    frame++;
 
     draw(x,y," ");
 
-    
-    handleInput();
     restrictInScreen();
-    drawSnake();
-   
-
-    // 화면을 갱신하고 다음 프레임까지 대기한다.
+    handleInput();
+    if(frame==MOVE_DELAY){
+    frame=0;
+    x+=snake_x;
+    y+=snake_y;
+   }
+   if(x==BOARD_SIZE||y==BOARD_SIZE){
+    break;
+   }
+   drawSnake();
     wait();
   }
 }
