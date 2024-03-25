@@ -72,15 +72,32 @@ void drawSnake() {
   draw(x, y, "■");
   apple[y][x]="■";
 }
+void drawapple(){
+
+  while(true){
+
+    if(apple[ry][rx]=="■"){
+      rx=distribution(gen);
+      ry=distribution(gen);
+    }
+    else{
+      break;
+    }
+  }
+  draw(rx,ry,"●");
+  apple[ry][rx]="●";
+}
 void restart(){
-  x = BOARD_SIZE / 2;
+    x = BOARD_SIZE / 2;
     y = BOARD_SIZE / 2;
+    body_x[0] = 0;
+    body_y[0] = 0;
     snake_x = -1;
+    snake_y = 0;
     frame = 0;
     score = "0";
-    bodyLength = 0;
+    bodyLength = 0; 
 
-    // Clear snake body segments
     for(int i = 0; i <= bodyLength; i++) {
         draw(body_x[i], body_y[i], " ");
     }
@@ -99,36 +116,27 @@ void restart(){
     for(int i=1;i<BOARD_SIZE;i++){
         draw(i,0,"━");
         draw(0,i,"┃");
-    }
+        }
     for(int i=BOARD_SIZE-1;i>0;i--){
         draw(i,BOARD_SIZE,"━");
         draw(BOARD_SIZE,i,"┃");
+
     }
+
     draw(6,21,"Score: ");
     draw(13,21,score);
 
     drawSnake();
+    drawapple();
 }
-void drawapple(){
 
-  while(true){
-
-    if(apple[ry][rx]=="■"){
-      rx=distribution(gen);
-      ry=distribution(gen);
-    }
-    else{
-      break;
-    }
-  }
-  draw(rx,ry,"●");
-  apple[ry][rx]="●";
-}
 void movesnake(){
 
     for(int i = 0; i <= bodyLength; i++) {
         draw(body_x[i], body_y[i], " ");
     }
+
+    draw(0,0,"┏");
 
     for(int i = bodyLength; i > 0; i--) {
         body_x[i] = body_x[i - 1];
@@ -190,7 +198,7 @@ void game() {
    }
    
    if(x==BOARD_SIZE||y==BOARD_SIZE||x==0||y==0||apple[y][x]=="■"||key(K_ESC)){
-
+   
     draw(6,10,"YOU LOSE!");
     draw(1,11,"Try again? (Enter)");
     draw(rx,ry," ");
