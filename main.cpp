@@ -24,6 +24,11 @@ int snake_y=0;
 int frame=0;
 string score="0";
 string apple[BOARD_SIZE][BOARD_SIZE];
+random_device rd;
+mt19937 gen(rd());
+uniform_int_distribution<>distribution(1,BOARD_SIZE-1);
+int rx=distribution(gen);
+int ry=distribution(gen);
 
 void handleInput() {
   if (key(K_LEFT)) {
@@ -91,22 +96,16 @@ void restart(){
   draw(13, 21, score);
 }
 void drawapple(){
-  
-  random_device rd;
-  mt19937 gen(rd());
-  uniform_int_distribution<>distribution(1,BOARD_SIZE-1);
 
-  int rx=distribution(gen);
-  int ry=distribution(gen);
-  
   while(true){
-  if(apple[ry][rx]=="■"){
-    rx=distribution(gen);
-    ry=distribution(gen);
-  }
-  else{
-    break;
-  }
+
+    if(apple[ry][rx]=="■"){
+      rx=distribution(gen);
+      ry=distribution(gen);
+    }
+    else{
+      break;
+    }
   }
   draw(rx,ry,"●");
   apple[ry][rx]="●";
@@ -155,18 +154,26 @@ void game() {
 
     draw(6,10,"YOU LOSE!");
     draw(1,11,"Try again? (Enter)");
+    draw(rx,ry," ");
 
     while (!key(K_ENTER) && !key(K_ESC)) {
            console::wait();
         }
         if (key(K_ENTER)) {
              restart();
+             drawapple();
         } 
         else if (key(K_ESC)) {
             break; 
         }
    }
    drawSnake();
+
+   if(x==rx&&y==ry){
+    drawapple();
+    
+   }
+   
    console::wait();
   }
 }
