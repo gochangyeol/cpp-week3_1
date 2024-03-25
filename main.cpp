@@ -37,19 +37,19 @@ int rx=distribution(gen);
 int ry=distribution(gen);
 
 void handleInput() {
-  if (key(K_LEFT)) {
+  if ((key(K_LEFT)&&bodyLength==0)||(key(K_LEFT)&&snake_x!=1)) {
     snake_x=-1;
     snake_y=0;
   }
-  if (key(K_RIGHT)) {
+  if ((key(K_RIGHT)&&bodyLength==0)||(key(K_RIGHT)&&snake_x!=-1)) {
     snake_x=1;
     snake_y=0;
   }
-  if (key(K_UP)) {
+  if ((key(K_UP)&&bodyLength==0)||(key(K_UP)&&snake_y!=1)) {
     snake_x=0;
     snake_y=-1;
   }
-  if (key(K_DOWN)) {
+  if ((key(K_DOWN)&&bodyLength==0)||(key(K_DOWN)&&snake_y!=-1)) {
     snake_x=0;
     snake_y=1;
   }
