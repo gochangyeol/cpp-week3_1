@@ -1,5 +1,6 @@
 #include "console.h"
 #include <string.h>
+#include<random>
 
 using namespace std;
 using namespace console;
@@ -22,6 +23,7 @@ int snake_x=-1;
 int snake_y=0;
 int frame=0;
 string score="0";
+string apple[BOARD_SIZE][BOARD_SIZE];
 
 void handleInput() {
   if (key(K_LEFT)) {
@@ -57,6 +59,7 @@ void restrictInScreen() {
 void drawSnake() {
   // x, y 위치에 *을 그린다.
   draw(x, y, "■");
+  apple[y][x]="■";
 }
 void restart(){
   x = BOARD_SIZE / 2;
@@ -64,6 +67,11 @@ void restart(){
   snake_x = -1;
   frame = 0;
   score = "0";
+  for(int i=0;i<BOARD_SIZE;i++){
+    for(int j=0;j<BOARD_SIZE;j++){
+      apple[i][j]=" ";
+    }
+  }
 
   clear();
   draw(0, 0, "┏");
@@ -82,12 +90,33 @@ void restart(){
   draw(6, 21, "Score: ");
   draw(13, 21, score);
 }
+void drawapple(){
+  
+  random_device rd;
+  mt19937 gen(rd());
+  uniform_int_distribution<>distribution(1,BOARD_SIZE-1);
+
+  int rx=distribution(gen);
+  int ry=distribution(gen);
+  
+  while(true){
+  if(apple[ry][rx]=="■"){
+    rx=distribution(gen);
+    ry=distribution(gen);
+  }
+  else{
+    break;
+  }
+  }
+  draw(rx,ry,"●");
+  apple[ry][rx]="●";
+}
 
 void game() {
 
   // 콘솔 라이브러리를 초기화한다.
   init();
-
+  clear();
   draw(0,0,"┏");
     draw(BOARD_SIZE,0,"┓");
     draw(0,BOARD_SIZE,"┗");
@@ -103,13 +132,18 @@ void game() {
     }
     draw(6,21,"Score: ");
     draw(13,21,score);
+    
+    drawSnake();
+    drawapple();
 
   while (true) {
     
     frame++;
 
     draw(x,y," ");
-
+    apple[y][x]=" ";
+    
+    
     restrictInScreen();
     handleInput();
     if(frame==MOVE_DELAY){
@@ -123,7 +157,7 @@ void game() {
     draw(1,11,"Try again? (Enter)");
 
     while (!key(K_ENTER) && !key(K_ESC)) {
-            wait();
+           console::wait();
         }
         if (key(K_ENTER)) {
              restart();
@@ -133,7 +167,7 @@ void game() {
         }
    }
    drawSnake();
-    wait();
+   console::wait();
   }
 }
 
