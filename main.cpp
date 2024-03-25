@@ -196,7 +196,25 @@ void game() {
     y+=snake_y;
     movesnake();
    }
-   
+   for(int i=1;i<=bodyLength;i++){
+    if(y==body_y[i]&&x==body_x[i]){
+      draw(6,10,"YOU LOSE!");
+    draw(1,11,"Try again? (Enter)");
+    draw(rx,ry," ");
+
+    while (!key(K_ENTER) && !key(K_ESC)) {
+           console::wait();
+        }
+        if (key(K_ENTER)) {
+             restart();
+             drawapple();
+             
+        } 
+        else if (key(K_ESC)) {
+            exit(0);
+        }
+    }
+    }
    if(x==BOARD_SIZE||y==BOARD_SIZE||x==0||y==0||apple[y][x]=="■"||key(K_ESC)){
    
     draw(6,10,"YOU LOSE!");
