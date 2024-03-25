@@ -37,19 +37,19 @@ int rx=distribution(gen);
 int ry=distribution(gen);
 
 void handleInput() {
-  if (key(K_LEFT)) {
+  if ((key(K_LEFT)&&bodyLength==0)||(key(K_LEFT)&&snake_x!=1)) {
     snake_x=-1;
     snake_y=0;
   }
-  if (key(K_RIGHT)) {
+  if ((key(K_RIGHT)&&bodyLength==0)||(key(K_RIGHT)&&snake_x!=-1)) {
     snake_x=1;
     snake_y=0;
   }
-  if (key(K_UP)) {
+  if ((key(K_UP)&&bodyLength==0)||(key(K_UP)&&snake_y!=1)) {
     snake_x=0;
     snake_y=-1;
   }
-  if (key(K_DOWN)) {
+  if ((key(K_DOWN)&&bodyLength==0)||(key(K_DOWN)&&snake_y!=-1)) {
     snake_x=0;
     snake_y=1;
   }
@@ -60,11 +60,11 @@ void restrictInScreen() {
   if (x < 1)
     x = 1;
   if (x >= BOARD_SIZE)
-    x = BOARD_SIZE - 1;
+    x = BOARD_SIZE;
   if (y < 1)
     y = 1;
   if (y >= BOARD_SIZE)
-    y = BOARD_SIZE - 1;
+    y = BOARD_SIZE;
 }
 
 void drawSnake() {
@@ -134,6 +134,7 @@ void movesnake(){
 
     for(int i = 0; i <= bodyLength; i++) {
         draw(body_x[i], body_y[i], " ");
+        apple[body_y[i]][body_x[i]]=" ";
     }
 
     draw(0,0,"┏");
@@ -148,12 +149,14 @@ void movesnake(){
 
     for(int i = 0; i <= bodyLength; i++) {
         draw(body_x[i], body_y[i], "■");
+        apple[body_y[i]][body_x[i]]="■";
     }
 }
 void addsnake(){
   int newx=body_x[bodyLength]+snakex_x[bodyLength]*-1;
   int newy=body_y[bodyLength]+snakey_y[bodyLength]*-1;
   draw(newx,newy,"■");
+  apple[newy][newx]="■";
 }
 
 void game() {
@@ -197,8 +200,29 @@ void game() {
     movesnake();
    }
    
-   if(x==BOARD_SIZE||y==BOARD_SIZE||x==0||y==0||apple[y][x]=="■"||key(K_ESC)){
-   
+   for(int i=1;i<=bodyLength;i++){
+    if(y==body_y[i]&&x==body_x[i]){
+      draw(6,10,"YOU LOSE!");
+    draw(1,11,"Try again? (Enter)");
+    draw(rx,ry," ");
+
+    while (!key(K_ENTER) && !key(K_ESC)) {
+           console::wait();
+        }
+        if (key(K_ENTER)) {
+             restart();
+             drawapple();
+             
+        } 
+        else if (key(K_ESC)) {
+            exit(0);
+        }
+    }
+    }
+
+   if(x==BOARD_SIZE||y==BOARD_SIZE||x==0||y==0||key(K_ESC)){
+    
+    
     draw(6,10,"YOU LOSE!");
     draw(1,11,"Try again? (Enter)");
     draw(rx,ry," ");
@@ -221,6 +245,9 @@ void game() {
     drawapple();
     addsnake();
     bodyLength++;
+    score = to_string(stoi(score) + 10);
+    draw(6,21,"Score: ");
+    draw(13,21,score);
    }
    
    console::wait();
